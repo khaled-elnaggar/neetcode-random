@@ -4,7 +4,7 @@
   "name": "ncrandom",
   "version": "1.0",
 
-  "description": "Get random questions from nc list",
+  "description": "Filter random questions from Neetcode list",
   
   "content_scripts": [
     {

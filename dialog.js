@@ -6,7 +6,7 @@ modal.style.borderRadius = "30px";
 modal.style.borderColor = "#4a4a4a";
 
 modal.innerHTML += `
-    <p style="text-align:center"><b>Random neetcode</b></p>
+    <p style="text-align:center"><b>Neetcode random</b></p>
     <div>
         <p>Preferences:</p>
         <form>

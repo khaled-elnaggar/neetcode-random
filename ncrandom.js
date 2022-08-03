@@ -1,0 +1,99 @@
+var easy, medium, hard;
+var all = {};
+
+function init(){
+  let htmlTables = document.getElementsByClassName("table");
+  easy = []; medium = []; hard = [];
+  all = {easy, medium, hard};
+
+  for (var i = 0; i < htmlTables.length ; i++) {
+    var category = htmlTables[i].parentNode.parentNode.parentNode.parentNode.firstChild.firstChild.innerText;
+    
+    htmlTables[i].childNodes[1].childNodes.forEach(n => {
+      if(!n.childNodes[2]) return;
+
+      let name = n.childNodes[1].textContent;
+      let solved = n.childNodes[0].firstChild.firstChild.firstChild.checked;
+      let url = n.childNodes[1].firstChild.href;
+      let difficulty = n.childNodes[2].textContent;
+      all[difficulty.toLowerCase()].push({name, url, difficulty, solved, category});
+    })
+  }
+
+}
+
+function any(difficulty){
+  init();
+  if(!difficulty){
+    let arr = Math.trunc(Math.random() * 3);
+    difficulty = all[Object.keys(all)[arr]];
+  }
+  let i = Math.trunc(Math.random() * difficulty.length);
+  return difficulty[i];
+}
+
+
+function getProblemFromRequest(requiredProblem){
+  let pool = []
+  if(requiredProblem.easy) pool = pool.concat(easy);
+  if(requiredProblem.medium) pool = pool.concat(medium);
+  if(requiredProblem.hard) pool = pool.concat(hard);
+
+  if(requiredProblem.new) pool = pool.filter(q => !q.solved)
+  if(requiredProblem.solved) pool = pool.filter(q => q.solved)
+
+  return any(pool)
+}
+
+document.getElementById("search_rnd").addEventListener("click", getRandomProblem);
+
+form = document.querySelector("form");
+
+form.addEventListener("change", checkInputs);  
+
+function getRandomProblem(){
+    init();
+
+    let requiredProblem = {}
+
+    let solvedOrUnsolvedFilter = document.querySelector('input[name="new"]:checked').value;
+    requiredProblem[solvedOrUnsolvedFilter] = true;
+    
+    for(let i = 0; i < form.elements.length; i++){
+      requiredProblem[form.elements[i].name] = form.elements[i].checked;
+    }
+
+    let problem = getProblemFromRequest(requiredProblem)
+    
+    if(!problem) {
+      document.getElementById("name_rnd").textContent = "Nothing matches search";
+      document.getElementById("problem_details").style.visibility="hidden"
+    }
+
+
+    document.getElementById("name_rnd").textContent = problem.name;
+
+    document.getElementById("url_rnd").textContent = "Problem link";
+    document.getElementById("url_rnd").href = problem.url;
+
+    document.getElementById("solved_rnd").textContent = problem.solved? "Solved" : "NOT Solved";
+    document.getElementById("difficulty_rnd").textContent = problem.difficulty;
+
+    document.querySelector("details").open = false;
+    document.getElementById("category_rnd").textContent = "  " + problem.category;
+
+    document.getElementById("problem_details").style.visibility="visible"
+}
+
+function checkInputs(){
+  let any = false;
+  for(let i = 0; i < form.elements.length; i++){
+    any = any || form.elements[i].checked
+  }
+
+  if(!any){
+    for(let i = 0; i < form.elements.length; i++){
+      form.elements[i].checked = true;
+    }    
+  }
+}

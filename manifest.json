@@ -1,0 +1,22 @@
+{
+
+  "manifest_version": 2,
+  "name": "ncrandom",
+  "version": "1.0",
+
+  "description": "Get random questions from nc list",
+  
+  "content_scripts": [
+    {
+      "matches": ["*://*.neetcode.io/*"],
+      "js": ["dialog.js", "ncrandom.js"]
+    }
+  ],
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "Neetcode Random",
+    "default_popup": "popup.html"
+  }
+  
+}

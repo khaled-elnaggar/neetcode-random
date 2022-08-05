@@ -1,9 +1,8 @@
 
 var modal = window.document.createElement("div")
-modal.style = 'width: 250px; padding: 15px; transform: translate(-50%, -50%); overflow-wrap: break-word; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 80%;'
+modal.id = "modal"
+modal.style = `width: 250px; border: 5px solid rgb(74, 74, 74); border-radius: 10px; padding: 10px; transform: translate(-50%, -50%); overflow-wrap: break-word; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 80%;`
 modal.style.backgroundColor = "#1d1f21";
-modal.style.borderRadius = "30px";
-modal.style.borderColor = "#4a4a4a";
 modal.style.position = "fixed";
 modal.style.left = "50%";
 modal.style.top = "50%";
@@ -40,7 +39,7 @@ modal.innerHTML += `
     <hr/>    
 
     <div id="result_rnd">
-      <p style="text-align:center; font-weight: bold;" id="name_rnd">problem name</p>
+      <p style="text-align:center; min-height: 39px; font-weight: bold;" id="name_rnd">problem name</p>
       <div id="problem_details" style="visibility: hidden;">
         <a target="_blank" id="url_rnd">problem link</a>
         <p id="difficulty_rnd">difficulty</p>
@@ -59,7 +58,11 @@ modal.innerHTML += `
     `
 
 document.body.appendChild(modal);
-document.getElementById("closeModal").addEventListener('click', function (){modal.style.display = "none"})
+
+function closeModal(){modal.style.display = "none"}
+document.getElementById("closeModal").addEventListener('click', closeModal)
+document.addEventListener("keyup", function (e){if(e.key === "Escape") closeModal()})
+
 
 var p = window.document.createElement('p')
 p.style.position= "fixed";
@@ -75,6 +78,17 @@ p.style.cursor= "pointer"
 p.textContent = "🔍"
 document.body.appendChild(p);
 
-p.addEventListener("click", function(){
-  modal.style.display = "block"
+p.addEventListener("click", function(e){
+  modal.style.display = "block";
+  e.stopPropagation();  
+})
+
+document.addEventListener("click", function (e){
+  width = parseInt(window.getComputedStyle(modal).width)
+  height = parseInt(window.getComputedStyle(modal).height)
+  xCoordinate = modal.getBoundingClientRect().x
+  yCoordinate = modal.getBoundingClientRect().y
+
+  if(e.clientX < xCoordinate || e.clientX > xCoordinate + width) closeModal();
+  if(e.clientY < yCoordinate || e.clientY > yCoordinate + height) closeModal();
 })

@@ -4,7 +4,7 @@
   "name": "ncrandom",
   "version": "1.1",
 
-  "description": "Filter random questions from Neetcode list",
+  "description": "Filter random questions from neetcode.io list by difficulty and questions solved, new or both",
   
   "content_scripts": [
     {

@@ -1,9 +1,13 @@
 
-var modal = window.document.createElement("dialog")
-modal.style = 'width: 250px; overflow-wrap: break-word; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 80%;'
+var modal = window.document.createElement("div")
+modal.style = 'width: 250px; padding: 15px; transform: translate(-50%, -50%); overflow-wrap: break-word; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 80%;'
 modal.style.backgroundColor = "#1d1f21";
 modal.style.borderRadius = "30px";
 modal.style.borderColor = "#4a4a4a";
+modal.style.position = "fixed";
+modal.style.left = "50%";
+modal.style.top = "50%";
+modal.style.display = "none"
 
 modal.innerHTML += `
     <p style="text-align:center"><b>Neetcode random</b></p>
@@ -49,14 +53,13 @@ modal.innerHTML += `
     </div>
     <hr style="margin: 24px 0px 5px 0px" />
     <div style="width: 100%">
-      <p style="font-size: small;">Made by dev_khalid@hotmail.com </p>
       <button id="closeModal" style="width: 100%; display: block;">close</button>
 
     </div>
     `
 
 document.body.appendChild(modal);
-document.getElementById("closeModal").addEventListener('click', function (){modal.close()})
+document.getElementById("closeModal").addEventListener('click', function (){modal.style.display = "none"})
 
 var p = window.document.createElement('p')
 p.style.position= "fixed";
@@ -73,5 +76,5 @@ p.textContent = "🔍"
 document.body.appendChild(p);
 
 p.addEventListener("click", function(){
-  modal.showModal();
+  modal.style.display = "block"
 })

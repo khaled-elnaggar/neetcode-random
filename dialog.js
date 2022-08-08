@@ -45,12 +45,13 @@ modal.innerHTML += `
         <p id="difficulty_rnd">difficulty</p>
         <p id="solved_rnd">solved</p>
         <details>
-          <summary id="summary_rnd" style="color: white">Category</summary>
-          <p id="category_rnd">category</p>
+          <summary id="summary_rnd" style="color: white; margin-bottom: 10px"">Category (click to reveal)</summary>
+          <p id="category_rnd" style="margin-left: 20px">category</p>
         </details>
+        <button id="navigate" style="width: 100%; display: block;">navigate to section</button>
       </div>
     </div>
-    <hr style="margin: 24px 0px 5px 0px" />
+    <hr style="margin: 10px 0px 10px 0px" />
     <div style="width: 100%">
       <button id="closeModal" style="width: 100%; display: block;">close</button>
 
@@ -84,6 +85,7 @@ p.addEventListener("click", function(e){
 })
 
 document.addEventListener("click", function (e){
+  if(e.target.getAttributeNames().some(e => e.endsWith("c18"))) {return;};
   width = parseInt(window.getComputedStyle(modal).width)
   height = parseInt(window.getComputedStyle(modal).height)
   xCoordinate = modal.getBoundingClientRect().x

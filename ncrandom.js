@@ -1,5 +1,10 @@
 var easy, medium, hard;
 var all = {};
+let categories = {}
+document.querySelectorAll("app-pattern-table").forEach(e =>
+  {let cat = e.firstChild.firstChild.firstChild; 
+  categories[cat.firstChild.textContent] = cat;})
+
 
 function init(){
   let htmlTables = document.getElementsByClassName("table");
@@ -7,7 +12,7 @@ function init(){
   all = {easy, medium, hard};
 
   for (var i = 0; i < htmlTables.length ; i++) {
-    var category = htmlTables[i].parentNode.parentNode.parentNode.parentNode.firstChild.firstChild.innerText;
+    var category = htmlTables[i].parentNode.parentNode.parentNode.parentNode.firstChild;
     
     htmlTables[i].childNodes[1].childNodes.forEach(n => {
       if(!n.childNodes[2]) return;
@@ -50,10 +55,10 @@ document.getElementById("search_rnd").addEventListener("click", getRandomProblem
 form = document.querySelector("form");
 
 form.addEventListener("change", checkInputs);  
-
+var lastProblem;
 function getRandomProblem(){
+    closeLastProblem();
     init();
-
     let requiredProblem = {}
 
     let solvedOrUnsolvedFilter = document.querySelector('input[name="new"]:checked').value;
@@ -67,10 +72,11 @@ function getRandomProblem(){
     
     if(!problem) {
       document.getElementById("name_rnd").textContent = "Nothing matches search";
-      document.getElementById("problem_details").style.visibility="hidden"
+      document.getElementById("problem_details").style.visibility="hidden";
+      return;
     }
 
-
+    lastProblem = problem
     document.getElementById("name_rnd").textContent = problem.name;
 
     document.getElementById("url_rnd").textContent = "Problem link";
@@ -80,9 +86,28 @@ function getRandomProblem(){
     document.getElementById("difficulty_rnd").textContent = problem.difficulty;
 
     document.querySelector("details").open = false;
-    document.getElementById("category_rnd").textContent = "  " + problem.category;
+
+    document.getElementById("navigate").addEventListener('click', navigateTo);
+
+    document.getElementById("category_rnd").textContent = "  " + problem.category.firstChild.textContent;
 
     document.getElementById("problem_details").style.visibility="visible"
+}
+
+function navigateTo(e){
+  if(lastProblem.category.classList.contains('active')){
+    lastProblem.category.scrollIntoView();
+  }else{
+    lastProblem.category.click();            
+  }
+}
+
+function closeLastProblem(){
+  if(!lastProblem) return;
+  document.getElementById("navigate").removeEventListener('click', navigateTo);
+  if(lastProblem.category.classList.contains("active")) {
+    lastProblem.category.click();
+   }
 }
 
 function checkInputs(){

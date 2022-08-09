@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "ncrandom",
-  "version": "1.1",
+  "version": "1.2",
 
   "description": "Filter random questions from neetcode.io list by difficulty and questions solved, new or both",
   

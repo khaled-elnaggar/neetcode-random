@@ -98,7 +98,7 @@ function navigateTo(e){
   if(lastProblem.category.classList.contains('active')){
     lastProblem.category.scrollIntoView();
   }else{
-    lastProblem.category.click();            
+    lastProblem.category.click();
   }
 }
 
@@ -107,6 +107,7 @@ function closeLastProblem(){
   document.getElementById("navigate").removeEventListener('click', navigateTo);
   if(lastProblem.category.classList.contains("active")) {
     lastProblem.category.click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
    }
 }
 

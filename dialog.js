@@ -2,7 +2,8 @@
 var modal = window.document.createElement("div")
 modal.id = "modal"
 modal.style = `width: 250px; border: 5px solid rgb(74, 74, 74); border-radius: 10px; padding: 10px; transform: translate(-50%, -50%); overflow-wrap: break-word; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 80%;`
-modal.style.backgroundColor = "#1d1f21";
+modal.style.backgroundColor = "var(--text-color-invert)";
+modal.style.color = "var(--text-color)";
 modal.style.position = "fixed";
 modal.style.left = "50%";
 modal.style.top = "50%";
@@ -45,13 +46,13 @@ modal.innerHTML += `
         <p id="difficulty_rnd">difficulty</p>
         <p id="solved_rnd">solved</p>
         <details>
-          <summary id="summary_rnd" style="color: white; margin-bottom: 10px"">Category (click to reveal)</summary>
+          <summary id="summary_rnd" style="color: var(--text-color); margin-bottom: 10px"">Category (click to reveal)</summary>
           <p id="category_rnd" style="margin-left: 20px">category</p>
         </details>
         <button id="navigate" style="width: 100%; display: block;">navigate to section</button>
       </div>
     </div>
-    <hr style="margin: 10px 0px 10px 0px" />
+    <hr style="margin: 10px 0px 10px 0px; backgroundColor: var(--text-color)" />
     <div style="width: 100%">
       <button id="closeModal" style="width: 100%; display: block;">close</button>
 

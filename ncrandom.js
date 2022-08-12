@@ -5,6 +5,11 @@ document.querySelectorAll("app-pattern-table").forEach(e =>
   {let cat = e.firstChild.firstChild.firstChild; 
   categories[cat.firstChild.textContent] = cat;})
 
+let select = document.getElementById("req_category");
+
+Object.keys(categories).forEach(cat => {
+ select.innerHTML += `<option c18 value="${cat}">${cat}</option>`;
+})
 
 function init(){
   let htmlTables = document.getElementsByClassName("table");
@@ -27,16 +32,28 @@ function init(){
 
 }
 
-function any(difficulty){
+function any(pool){
   init();
-  if(!difficulty){
+  if(!pool){
     let arr = Math.trunc(Math.random() * 3);
-    difficulty = all[Object.keys(all)[arr]];
+    pool = all[Object.keys(all)[arr]];
   }
-  let i = Math.trunc(Math.random() * difficulty.length);
-  return difficulty[i];
+
+  shuffleArray(pool)
+  console.log(pool)
+  let i = Math.trunc(Math.random() * pool.length);
+  return pool[i];
 }
 
+/* Randomize array in-place using Durstenfeld shuffle algorithm */
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
 
 function getProblemFromRequest(requiredProblem){
   let pool = []
@@ -46,6 +63,8 @@ function getProblemFromRequest(requiredProblem){
 
   if(requiredProblem.new) pool = pool.filter(q => !q.solved)
   if(requiredProblem.solved) pool = pool.filter(q => q.solved)
+
+  if(!requiredProblem["req_category"].startsWith("any")) pool = pool.filter(q => q.category["textContent"].startsWith(requiredProblem["req_category"]))
 
   return any(pool)
 }
@@ -57,7 +76,6 @@ form = document.querySelector("form");
 form.addEventListener("change", checkInputs);  
 var lastProblem;
 function getRandomProblem(){
-    closeLastProblem();
     init();
     let requiredProblem = {}
 
@@ -68,6 +86,8 @@ function getRandomProblem(){
       requiredProblem[form.elements[i].name] = form.elements[i].checked;
     }
 
+    requiredProblem["req_category"] = document.getElementById("req_category").value;
+
     let problem = getProblemFromRequest(requiredProblem)
     
     if(!problem) {
@@ -75,6 +95,7 @@ function getRandomProblem(){
       document.getElementById("problem_details").style.visibility="hidden";
       return;
     }
+    closeLastProblem(problem);
 
     lastProblem = problem
     document.getElementById("name_rnd").textContent = problem.name;
@@ -102,10 +123,10 @@ function navigateTo(e){
   }
 }
 
-function closeLastProblem(){
+function closeLastProblem(newProblem){
   if(!lastProblem) return;
   document.getElementById("navigate").removeEventListener('click', navigateTo);
-  if(lastProblem.category.classList.contains("active")) {
+  if(lastProblem.category.classList.contains("active") && newProblem.category !== lastProblem.category) {
     lastProblem.category.click();
     window.scrollTo({ top: 0, behavior: 'smooth' });
    }

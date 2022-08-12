@@ -12,7 +12,7 @@ modal.style.display = "none"
 modal.innerHTML += `
     <p style="text-align:center"><b>Neetcode random</b></p>
     <div>
-        <p>Preferences:</p>
+        <p>Difficulty:</p>
         <form>
           <input type="checkbox" id="easy_rnd" name="easy" checked><label style="padding-left: 2px;" for="easy_rnd">Easy</label>
 
@@ -24,6 +24,7 @@ modal.innerHTML += `
         <br/>    
 
         <div>
+          <p>Solved:</p>
           <input type="radio" id="any_rnd" name="new" value="any" checked>
           <label for="any_rnd">Any</label>
 
@@ -32,6 +33,13 @@ modal.innerHTML += `
 
           <input type="radio" id="new_rnd" name="new" value="new">
           <label for="new_rnd">Not solved</label>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <p style="margin-bottom: 5px;">Category:</p>
+          <select c18 style="text-align:center; width: 70%" name="req_category" id="req_category">
+            <option c18 value="any">any category</option>
+          </select>
         </div>
     </div>
 
@@ -81,17 +89,17 @@ p.textContent = "🔍"
 document.body.appendChild(p);
 
 p.addEventListener("click", function(e){
-  modal.style.display = "block";
-  e.stopPropagation();  
+  if(modal.style.display !== "block") modal.style.display = "block";
+  else modal.style.display = "none";
 })
 
-document.addEventListener("click", function (e){
-  if(e.target.getAttributeNames().some(e => e.endsWith("c18"))) {return;};
-  width = parseInt(window.getComputedStyle(modal).width)
-  height = parseInt(window.getComputedStyle(modal).height)
-  xCoordinate = modal.getBoundingClientRect().x
-  yCoordinate = modal.getBoundingClientRect().y
+// document.addEventListener("click", function (e){
+//   if(e.target.getAttributeNames().some(e => e.endsWith("c18") || e.startsWith("ng-tns"))) {return;};
+//   width = parseInt(window.getComputedStyle(modal).width)
+//   height = parseInt(window.getComputedStyle(modal).height)
+//   xCoordinate = modal.getBoundingClientRect().x
+//   yCoordinate = modal.getBoundingClientRect().y
 
-  if(e.clientX < xCoordinate || e.clientX > xCoordinate + width) closeModal();
-  if(e.clientY < yCoordinate || e.clientY > yCoordinate + height) closeModal();
-})
+//   if(e.clientX < xCoordinate || e.clientX > xCoordinate + width) closeModal();
+//   if(e.clientY < yCoordinate || e.clientY > yCoordinate + height) closeModal();
+// })

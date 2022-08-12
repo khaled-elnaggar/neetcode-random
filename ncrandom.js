@@ -8,8 +8,16 @@ document.querySelectorAll("app-pattern-table").forEach(e =>
 let select = document.getElementById("req_category");
 
 Object.keys(categories).forEach(cat => {
- select.innerHTML += `<option c18 value="${cat}">${cat}</option>`;
+  let option = document.createElement("option");
+  option.value = cat;
+  option.textContent = cat;
+  option.addEventListener("mouseover", function() {
+        modal.style.opacity = 1.0;
+    });
+  select.appendChild(option)
+ // select.innerHTML += `<option c18 value="${cat}">${cat}</option>`;
 })
+
 
 function init(){
   let htmlTables = document.getElementsByClassName("table");
@@ -40,7 +48,6 @@ function any(pool){
   }
 
   shuffleArray(pool)
-  console.log(pool)
   let i = Math.trunc(Math.random() * pool.length);
   return pool[i];
 }

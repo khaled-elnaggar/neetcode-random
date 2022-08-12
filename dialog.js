@@ -1,7 +1,7 @@
 
 var modal = window.document.createElement("div")
 modal.id = "modal"
-modal.style = `width: 250px; border: 5px solid rgb(74, 74, 74); border-radius: 10px; padding: 10px; transform: translate(-50%, -50%); overflow-wrap: break-word; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 80%;`
+modal.style = `width: 250px; opacity: 0.8; border: 5px solid rgb(74, 74, 74); border-radius: 10px; padding: 10px; transform: translate(-50%, -50%); overflow-wrap: break-word; font-family: "Segoe UI", Tahoma, sans-serif; font-size: 80%;`
 modal.style.backgroundColor = "var(--text-color-invert)";
 modal.style.color = "var(--text-color)";
 modal.style.position = "fixed";
@@ -68,6 +68,15 @@ modal.innerHTML += `
     `
 
 document.body.appendChild(modal);
+
+
+modal.addEventListener("mouseenter", function() {
+    modal.style.opacity = 1.0;
+});
+
+modal.addEventListener("mouseleave", function() {
+    modal.style.opacity = 0.8;
+});
 
 function closeModal(){modal.style.display = "none"}
 document.getElementById("closeModal").addEventListener('click', closeModal)

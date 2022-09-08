@@ -1,7 +1,7 @@
 {
 
   "manifest_version": 3,
-  "name": "ncrandom",
+  "name": "neetcode random",
   "version": "1.3",
 
   "description": "Filter random questions from neetcode.io list by difficulty and questions solved, new or both",
@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.neetcode.io/*"],
-      "js": ["dialog.js", "ncrandom.js"]
+      "js": ["dialog.js", "model.js"]
     }
   ],
 

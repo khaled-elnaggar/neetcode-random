@@ -1,22 +1,24 @@
 var easy, medium, hard;
 var all = {};
-let categories = {}
-document.querySelectorAll("app-pattern-table").forEach(e =>
-  {let cat = e.firstChild.firstChild.firstChild; 
-  categories[cat.firstChild.textContent] = cat;})
+let categories = {};
+initCats();
+function initCats(){
+  document.querySelectorAll("app-pattern-table").forEach(e =>
+    {let cat = e.firstChild.firstChild.firstChild; 
+    categories[cat.firstChild.textContent] = cat;})
 
-let select = document.getElementById("req_category");
+  let select = document.getElementById("req_category");
 
-Object.keys(categories).forEach(cat => {
-  let option = document.createElement("option");
-  option.value = cat;
-  option.textContent = cat;
-  option.addEventListener("mouseover", function() {
-        modal.style.opacity = 1.0;
-    });
-  select.appendChild(option)
- // select.innerHTML += `<option c18 value="${cat}">${cat}</option>`;
-})
+  Object.keys(categories).forEach(cat => {
+    let option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    option.addEventListener("mouseover", function() {
+          modal.style.opacity = 1.0;
+      });
+    select.appendChild(option)
+  })
+}
 
 
 function init(){
@@ -71,7 +73,11 @@ function getProblemFromRequest(requiredProblem){
   if(requiredProblem.new) pool = pool.filter(q => !q.solved)
   if(requiredProblem.solved) pool = pool.filter(q => q.solved)
 
-  if(!requiredProblem["req_category"].startsWith("any")) pool = pool.filter(q => q.category["textContent"].startsWith(requiredProblem["req_category"]))
+  if(!requiredProblem["req_category"].includes("any")) {
+    pool = pool.filter(q => {
+      return requiredProblem["req_category"].includes(q.category.firstChild.textContent)
+    })
+  }
 
   return any(pool)
 }
@@ -93,7 +99,7 @@ function getRandomProblem(){
       requiredProblem[form.elements[i].name] = form.elements[i].checked;
     }
 
-    requiredProblem["req_category"] = document.getElementById("req_category").value;
+    requiredProblem["req_category"] = Array.from(document.querySelectorAll("#req_category option:checked")).map(o => o.value);
 
     let problem = getProblemFromRequest(requiredProblem)
     
@@ -151,3 +157,5 @@ function checkInputs(){
     }    
   }
 }
+
+document.querySelector("[routerlink='/practice']").addEventListener('click', () => setTimeout(initCats, 500));

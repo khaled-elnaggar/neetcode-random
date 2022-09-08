@@ -37,7 +37,7 @@ modal.innerHTML += `
 
         <div style="margin-top: 10px;">
           <p style="margin-bottom: 5px;">Category:</p>
-          <select c18 style="text-align:center; width: 70%" name="req_category" id="req_category">
+          <select c18 style="text-align:center; width: 70%" name="req_category" id="req_category" multiple size=6>
             <option c18 value="any">any category</option>
           </select>
         </div>
@@ -102,13 +102,3 @@ p.addEventListener("click", function(e){
   else modal.style.display = "none";
 })
 
-// document.addEventListener("click", function (e){
-//   if(e.target.getAttributeNames().some(e => e.endsWith("c18") || e.startsWith("ng-tns"))) {return;};
-//   width = parseInt(window.getComputedStyle(modal).width)
-//   height = parseInt(window.getComputedStyle(modal).height)
-//   xCoordinate = modal.getBoundingClientRect().x
-//   yCoordinate = modal.getBoundingClientRect().y
-
-//   if(e.clientX < xCoordinate || e.clientX > xCoordinate + width) closeModal();
-//   if(e.clientY < yCoordinate || e.clientY > yCoordinate + height) closeModal();
-// })

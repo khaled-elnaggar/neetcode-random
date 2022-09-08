@@ -2,7 +2,7 @@
 
   "manifest_version": 3,
   "name": "neetcode random",
-  "version": "1.3",
+  "version": "1.4",
 
   "description": "Filter random questions from neetcode.io list by difficulty and questions solved, new or both",
   

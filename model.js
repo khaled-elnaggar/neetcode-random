@@ -139,7 +139,7 @@ function navigateTo(e){
 function closeLastProblem(newProblem){
   if(!lastProblem) return;
   document.getElementById("navigate").removeEventListener('click', navigateTo);
-  if(lastProblem.category.classList.contains("active") && newProblem.category !== lastProblem.category) {
+  if(lastProblem.category.classList.contains("active")) {
     lastProblem.category.click();
     window.scrollTo({ top: 0, behavior: 'smooth' });
    }

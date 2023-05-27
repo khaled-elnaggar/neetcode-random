@@ -8,6 +8,7 @@ modal.style.position = "fixed";
 modal.style.left = "50%";
 modal.style.top = "50%";
 modal.style.display = "none"
+modal.style.zIndex = 100
 
 modal.innerHTML += `
     <p style="text-align:center"><b>Neetcode random</b></p>
@@ -83,22 +84,23 @@ document.getElementById("closeModal").addEventListener('click', closeModal)
 document.addEventListener("keyup", function (e){if(e.key === "Escape") closeModal()})
 
 
-var p = window.document.createElement('p')
-p.style.position= "fixed";
-p.style.right= "70px";
-p.style.bottom= "70px";
-p.style.zIndex = 999;
-p.style.fontSize = "50px";
-p.style.color="white";
-p.style.padding="5px";
-p.style.borderRadius="10px";
-p.style.backgroundColor="rgba(0, 0, 0, 0.8)";
-p.style.cursor= "pointer"
-p.textContent = "🔍"
-document.body.appendChild(p);
+var searchIcon = window.document.createElement('p')
+searchIcon.style.position= "fixed";
+searchIcon.style.right= "70px";
+searchIcon.style.bottom= "70px";
+searchIcon.style.zIndex = 999;
+searchIcon.style.fontSize = "50px";
+searchIcon.style.color="white";
+searchIcon.style.padding="5px";
+searchIcon.style.borderRadius="10px";
+searchIcon.style.backgroundColor="rgba(0, 0, 0, 0.8)";
+searchIcon.style.cursor= "pointer"
+searchIcon.textContent = "🔍"
+document.body.appendChild(searchIcon);
 
-p.addEventListener("click", function(e){
-  if(modal.style.display !== "block") modal.style.display = "block";
+searchIcon.addEventListener("click", function(e){
+  if(modal.style.display !== "block") 
+    modal.style.display = "block";
   else modal.style.display = "none";
 })
 

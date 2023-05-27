@@ -1,161 +1,196 @@
 var easy, medium, hard;
-var all = {};
+var allProblems = {};
 let categories = {};
-initCats();
-function initCats(){
-  document.querySelectorAll("app-pattern-table").forEach(e =>
-    {let cat = e.firstChild.firstChild.firstChild; 
-    categories[cat.firstChild.textContent] = cat;})
 
-  let select = document.getElementById("req_category");
+initializeCategories();
 
-  Object.keys(categories).forEach(cat => {
+function initializeCategories() {
+  extractCategoryNames();
+  fillCategoriesInSelectOptions();
+}
+
+function extractCategoryNames(){
+  document.querySelectorAll("app-pattern-table").forEach(e => {
+    let categoryHeader = e.firstChild.firstChild.firstChild;
+    categories[categoryHeader.firstChild.textContent] = categoryHeader;
+    }
+  )
+}
+
+function fillCategoriesInSelectOptions(){
+  let categoriesSelect = document.getElementById("req_category");
+
+  Object.keys(categories).forEach(categoryName => {
     let option = document.createElement("option");
-    option.value = cat;
-    option.textContent = cat;
-    option.addEventListener("mouseover", function() {
-          modal.style.opacity = 1.0;
-      });
-    select.appendChild(option)
+    option.value = categoryName;
+    option.textContent = categoryName;
+    option.addEventListener("mouseover", function () {
+      modal.style.opacity = 1.0;
+    });
+    categoriesSelect.appendChild(option)
   })
 }
 
 
-function init(){
-  let htmlTables = document.getElementsByClassName("table");
+function buildInternalTableFromProblemStatus() {
+  let htmlQuestionTables = document.getElementsByClassName("table");
   easy = []; medium = []; hard = [];
-  all = {easy, medium, hard};
+  allProblems = { easy, medium, hard };
 
-  for (var i = 0; i < htmlTables.length ; i++) {
-    var category = htmlTables[i].parentNode.parentNode.parentNode.parentNode.firstChild;
-    
-    htmlTables[i].childNodes[1].childNodes.forEach(n => {
-      if(!n.childNodes[2]) return;
+  for (var i = 0; i < htmlQuestionTables.length; i++) {
+    var categoryHeader = htmlQuestionTables[i].parentNode.parentNode.parentNode.parentNode.firstChild;
 
-      let name = n.childNodes[1].textContent;
-      let solved = n.childNodes[0].firstChild.firstChild.firstChild.checked;
-      let url = n.childNodes[1].firstChild.href;
-      let difficulty = n.childNodes[2].textContent;
-      all[difficulty.toLowerCase()].push({name, url, difficulty, solved, category});
+    htmlQuestionTables[i].childNodes[1].childNodes.forEach(problemHeader => {
+      if (!problemHeader.childNodes[2]) return;
+      extractProblemInfo(allProblems, problemHeader, categoryHeader);
     })
   }
-
 }
 
-function any(pool){
-  init();
-  if(!pool){
-    let arr = Math.trunc(Math.random() * 3);
-    pool = all[Object.keys(all)[arr]];
+function extractProblemInfo(allProblems, problemHeader, categoryHeader){
+  let name = problemHeader.childNodes[2].textContent;
+  let solved = problemHeader.childNodes[0].firstChild.firstChild.firstChild.checked;
+  let url = problemHeader.childNodes[2].firstChild.href;
+  let difficulty = problemHeader.childNodes[3].textContent;
+  allProblems[difficulty.toLowerCase()].push({ name, url, difficulty, solved, category: categoryHeader });
+}
+
+function getProblemFromPool(pool) {
+  buildInternalTableFromProblemStatus();
+  if (!pool) {
+    let randomDifficulty = Math.trunc(Math.random() * 3);
+    pool = allProblems[Object.keys(allProblems)[randomDifficulty]];
   }
 
   shuffleArray(pool)
+
   let i = Math.trunc(Math.random() * pool.length);
+  
   return pool[i];
 }
 
-/* Randomize array in-place using Durstenfeld shuffle algorithm */
+/* Randomize array in-place using Durstenfeld shuffle algorithm - copy pasta */
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
 }
 
-function getProblemFromRequest(requiredProblem){
-  let pool = []
-  if(requiredProblem.easy) pool = pool.concat(easy);
-  if(requiredProblem.medium) pool = pool.concat(medium);
-  if(requiredProblem.hard) pool = pool.concat(hard);
+function getProblemFromRequest(requiredProblem) {
+  let candidateProblems = []
+  if (requiredProblem.easy) candidateProblems = candidateProblems.concat(easy);
+  if (requiredProblem.medium) candidateProblems = candidateProblems.concat(medium);
+  if (requiredProblem.hard) candidateProblems = candidateProblems.concat(hard);
 
-  if(requiredProblem.new) pool = pool.filter(q => !q.solved)
-  if(requiredProblem.solved) pool = pool.filter(q => q.solved)
+  if (requiredProblem.new) candidateProblems = candidateProblems.filter(q => !q.solved)
+  if (requiredProblem.solved) candidateProblems = candidateProblems.filter(q => q.solved)
 
-  if(!requiredProblem["req_category"].includes("any")) {
-    pool = pool.filter(q => {
-      return requiredProblem["req_category"].includes(q.category.firstChild.textContent)
-    })
+  if (!requiredProblem["req_category"].includes("any")) {
+    candidateProblems = candidateProblems.filter(problem => requiredProblem["req_category"].includes(problem.category.firstChild.textContent))
   }
 
-  return any(pool)
+  return getProblemFromPool(candidateProblems)
 }
 
 document.getElementById("search_rnd").addEventListener("click", getRandomProblem);
 
 form = document.querySelector("form");
 
-form.addEventListener("change", checkInputs);  
+form.addEventListener("change", checkInputs);
 var lastProblem;
-function getRandomProblem(){
-    init();
-    let requiredProblem = {}
 
-    let solvedOrUnsolvedFilter = document.querySelector('input[name="new"]:checked').value;
-    requiredProblem[solvedOrUnsolvedFilter] = true;
-    
-    for(let i = 0; i < form.elements.length; i++){
-      requiredProblem[form.elements[i].name] = form.elements[i].checked;
-    }
 
-    requiredProblem["req_category"] = Array.from(document.querySelectorAll("#req_category option:checked")).map(o => o.value);
+function getRandomProblem() {
+  buildInternalTableFromProblemStatus();
+  let requiredProblemSpecs = {}
 
-    let problem = getProblemFromRequest(requiredProblem)
-    
-    if(!problem) {
-      document.getElementById("name_rnd").textContent = "Nothing matches search";
-      document.getElementById("problem_details").style.visibility="hidden";
-      return;
-    }
-    closeLastProblem(problem);
+  getSolvedFilter(requiredProblemSpecs);
+  getDifficultyFilter(requiredProblemSpecs);
+  getCategoryFilter(requiredProblemSpecs);
 
-    lastProblem = problem
-    document.getElementById("name_rnd").textContent = problem.name;
+  let problem = getProblemFromRequest(requiredProblemSpecs)
 
-    document.getElementById("url_rnd").textContent = "Problem link";
-    document.getElementById("url_rnd").href = problem.url;
+  if (!problem) {
+    document.getElementById("name_rnd").textContent = "Nothing matches search";
+    document.getElementById("problem_details").style.visibility = "hidden";
+    return;
+  }
+  
+  closePreviousProblemCategory(problem);
 
-    document.getElementById("solved_rnd").textContent = problem.solved? "Solved" : "NOT Solved";
-    document.getElementById("difficulty_rnd").textContent = problem.difficulty;
-
-    document.querySelector("details").open = false;
-
-    document.getElementById("navigate").addEventListener('click', navigateTo);
-
-    document.getElementById("category_rnd").textContent = "  " + problem.category.firstChild.textContent;
-
-    document.getElementById("problem_details").style.visibility="visible"
+  lastProblem = problem
+  
+  fillProblemDetailsForUi(problem);
 }
 
-function navigateTo(e){
-  if(lastProblem.category.classList.contains('active')){
+function fillProblemDetailsForUi(problem){
+  document.getElementById("name_rnd").textContent = problem.name;
+
+  document.getElementById("url_rnd").textContent = "Problem link";
+  document.getElementById("url_rnd").href = problem.url;
+
+  document.getElementById("solved_rnd").textContent = problem.solved ? "Solved" : "NOT Solved";
+  document.getElementById("difficulty_rnd").textContent = problem.difficulty;
+
+  document.querySelector("details").open = false;
+
+  document.getElementById("navigate").addEventListener('click', navigateTo);
+
+  document.getElementById("category_rnd").textContent = "  " + problem.category.firstChild.textContent;
+
+  document.getElementById("problem_details").style.visibility = "visible"
+}
+
+
+function getSolvedFilter(requiredProblemSpecs){
+  let solvedOrUnsolvedFilter = document.querySelector('input[name="new"]:checked').value;
+  requiredProblemSpecs[solvedOrUnsolvedFilter] = true;
+}
+
+function getDifficultyFilter(requiredProblemSpecs){
+  for (let i = 0; i < form.elements.length; i++) {
+    requiredProblemSpecs[form.elements[i].name] = form.elements[i].checked;
+  }
+}
+
+function getCategoryFilter(requiredProblemSpecs){
+  requiredProblemSpecs["req_category"] = Array.from(document.querySelectorAll("#req_category option:checked")).map(o => o.value);
+  if(requiredProblemSpecs["req_category"].length == 0){
+    requiredProblemSpecs["req_category"] = ["any"]
+  }
+}
+
+function navigateTo(e) {
+  if (lastProblem.category.classList.contains('active')) {
     lastProblem.category.scrollIntoView();
-  }else{
+  } else {
     lastProblem.category.click();
   }
 }
 
-function closeLastProblem(newProblem){
-  if(!lastProblem) return;
+function closePreviousProblemCategory(newProblem) {
+  if (!lastProblem) return;
   document.getElementById("navigate").removeEventListener('click', navigateTo);
-  if(lastProblem.category.classList.contains("active")) {
+  if (lastProblem.category.classList.contains("active")) {
     lastProblem.category.click();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-   }
+  }
 }
 
-function checkInputs(){
-  let any = false;
-  for(let i = 0; i < form.elements.length; i++){
-    any = any || form.elements[i].checked
+function checkInputs() {
+  let anyChecked = false;
+  for (let i = 0; i < form.elements.length; i++) {
+    anyChecked = anyChecked || form.elements[i].checked
   }
 
-  if(!any){
-    for(let i = 0; i < form.elements.length; i++){
+  if (!anyChecked) {
+    for (let i = 0; i < form.elements.length; i++) {
       form.elements[i].checked = true;
-    }    
+    }
   }
 }
 
-document.querySelector("[routerlink='/practice']").addEventListener('click', () => setTimeout(initCats, 500));
+document.querySelector("[routerlink='/practice']").addEventListener('click', () => setTimeout(initializeCategories, 500));

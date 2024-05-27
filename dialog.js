@@ -38,7 +38,7 @@ modal.innerHTML += `
 
         <div style="margin-top: 10px;">
           <p style="margin-bottom: 5px;">Category:</p>
-          <select c18 style="text-align:center; width: 70%" name="req_category" id="req_category" multiple size=6>
+          <select c18 style="text-align:center; width: 85%" name="req_category" id="req_category" multiple size=10>
             <option c18 value="any">any category</option>
           </select>
         </div>
@@ -51,7 +51,7 @@ modal.innerHTML += `
     <div id="result_rnd">
       <p style="text-align:center; min-height: 39px; font-weight: bold;" id="name_rnd">problem name</p>
       <div id="problem_details" style="visibility: hidden;">
-        <a target="_blank" id="url_rnd">problem link</a>
+        <a target="_blank" id="url_rnd">leetcode link</a>
         <p id="difficulty_rnd">difficulty</p>
         <p id="solved_rnd">solved</p>
         <details>
@@ -71,36 +71,39 @@ modal.innerHTML += `
 document.body.appendChild(modal);
 
 
-modal.addEventListener("mouseenter", function() {
-    modal.style.opacity = 1.0;
+modal.addEventListener("mouseenter", function () {
+  modal.style.opacity = 1.0;
 });
 
-modal.addEventListener("mouseleave", function() {
-    modal.style.opacity = 0.8;
+modal.addEventListener("mouseleave", function () {
+  modal.style.opacity = 0.8;
 });
 
-function closeModal(){modal.style.display = "none"}
+function closeModal() { modal.style.display = "none" }
 document.getElementById("closeModal").addEventListener('click', closeModal)
-document.addEventListener("keyup", function (e){if(e.key === "Escape") closeModal()})
+document.addEventListener("keyup", function (e) { if (e.key === "Escape") closeModal() })
 
 
 var searchIcon = window.document.createElement('p')
-searchIcon.style.position= "fixed";
-searchIcon.style.right= "70px";
-searchIcon.style.bottom= "70px";
+searchIcon.id = "search-icon";
+searchIcon.style.position = "fixed";
+searchIcon.style.right = "70px";
+searchIcon.style.bottom = "70px";
 searchIcon.style.zIndex = 999;
 searchIcon.style.fontSize = "50px";
-searchIcon.style.color="white";
-searchIcon.style.padding="5px";
-searchIcon.style.borderRadius="10px";
-searchIcon.style.backgroundColor="rgba(0, 0, 0, 0.8)";
-searchIcon.style.cursor= "pointer"
+searchIcon.style.color = "white";
+searchIcon.style.padding = "5px";
+searchIcon.style.borderRadius = "10px";
+searchIcon.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+searchIcon.style.cursor = "pointer"
 searchIcon.textContent = "🔍"
 document.body.appendChild(searchIcon);
 
-searchIcon.addEventListener("click", function(e){
-  if(modal.style.display !== "block") 
+searchIcon.addEventListener("click", function (e) {
+  if (modal.style.display !== "block") {
+    initializeCategories();
     modal.style.display = "block";
+  }
   else modal.style.display = "none";
 })
 

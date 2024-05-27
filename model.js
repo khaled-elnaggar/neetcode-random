@@ -1,24 +1,26 @@
 var easy, medium, hard;
 var allProblems = {};
-let categories = {};
+var allCategories = "All categories";
+let categories = {[allCategories]:null};
 
-initializeCategories();
 
 function initializeCategories() {
+  console.log("Initializing categories");
   extractCategoryNames();
   fillCategoriesInSelectOptions();
 }
 
-function extractCategoryNames(){
+function extractCategoryNames() {
   document.querySelectorAll("app-pattern-table").forEach(e => {
     let categoryHeader = e.firstChild.firstChild.firstChild;
     categories[categoryHeader.firstChild.textContent] = categoryHeader;
-    }
+  }
   )
 }
 
-function fillCategoriesInSelectOptions(){
+function fillCategoriesInSelectOptions() {
   let categoriesSelect = document.getElementById("req_category");
+  categoriesSelect.replaceChildren();
 
   Object.keys(categories).forEach(categoryName => {
     let option = document.createElement("option");
@@ -31,6 +33,7 @@ function fillCategoriesInSelectOptions(){
   })
 }
 
+document.querySelector("[routerlink='/practice']").addEventListener('click', () => setTimeout(initializeCategories, 500));
 
 function buildInternalTableFromProblemStatus() {
   let htmlQuestionTables = document.getElementsByClassName("table");
@@ -47,10 +50,10 @@ function buildInternalTableFromProblemStatus() {
   }
 }
 
-function extractProblemInfo(allProblems, problemHeader, categoryHeader){
+function extractProblemInfo(allProblems, problemHeader, categoryHeader) {
   let name = problemHeader.childNodes[2].textContent;
   let solved = problemHeader.childNodes[0].firstChild.firstChild.firstChild.checked;
-  let url = problemHeader.childNodes[2].firstChild.href;
+  let url = problemHeader.childNodes[2].childNodes[1].href;
   let difficulty = problemHeader.childNodes[3].textContent;
   allProblems[difficulty.toLowerCase()].push({ name, url, difficulty, solved, category: categoryHeader });
 }
@@ -65,7 +68,7 @@ function getProblemFromPool(pool) {
   shuffleArray(pool)
 
   let i = Math.trunc(Math.random() * pool.length);
-  
+
   return pool[i];
 }
 
@@ -88,7 +91,7 @@ function getProblemFromRequest(requiredProblem) {
   if (requiredProblem.new) candidateProblems = candidateProblems.filter(q => !q.solved)
   if (requiredProblem.solved) candidateProblems = candidateProblems.filter(q => q.solved)
 
-  if (!requiredProblem["req_category"].includes("any")) {
+  if (!requiredProblem["req_category"].includes(allCategories)) {
     candidateProblems = candidateProblems.filter(problem => requiredProblem["req_category"].includes(problem.category.firstChild.textContent))
   }
 
@@ -118,15 +121,15 @@ function getRandomProblem() {
     document.getElementById("problem_details").style.visibility = "hidden";
     return;
   }
-  
+
   closePreviousProblemCategory(problem);
 
   lastProblem = problem
-  
+
   fillProblemDetailsForUi(problem);
 }
 
-function fillProblemDetailsForUi(problem){
+function fillProblemDetailsForUi(problem) {
   document.getElementById("name_rnd").textContent = problem.name;
 
   document.getElementById("url_rnd").textContent = "Problem link";
@@ -145,21 +148,21 @@ function fillProblemDetailsForUi(problem){
 }
 
 
-function getSolvedFilter(requiredProblemSpecs){
+function getSolvedFilter(requiredProblemSpecs) {
   let solvedOrUnsolvedFilter = document.querySelector('input[name="new"]:checked').value;
   requiredProblemSpecs[solvedOrUnsolvedFilter] = true;
 }
 
-function getDifficultyFilter(requiredProblemSpecs){
+function getDifficultyFilter(requiredProblemSpecs) {
   for (let i = 0; i < form.elements.length; i++) {
     requiredProblemSpecs[form.elements[i].name] = form.elements[i].checked;
   }
 }
 
-function getCategoryFilter(requiredProblemSpecs){
+function getCategoryFilter(requiredProblemSpecs) {
   requiredProblemSpecs["req_category"] = Array.from(document.querySelectorAll("#req_category option:checked")).map(o => o.value);
-  if(requiredProblemSpecs["req_category"].length == 0){
-    requiredProblemSpecs["req_category"] = ["any"]
+  if (requiredProblemSpecs["req_category"].length == 0) {
+    requiredProblemSpecs["req_category"] = [allCategories]
   }
 }
 
@@ -181,16 +184,14 @@ function closePreviousProblemCategory(newProblem) {
 }
 
 function checkInputs() {
-  let anyChecked = false;
+  let atLeastOneBoxChecked = false;
   for (let i = 0; i < form.elements.length; i++) {
-    anyChecked = anyChecked || form.elements[i].checked
+    atLeastOneBoxChecked = atLeastOneBoxChecked || form.elements[i].checked
   }
 
-  if (!anyChecked) {
+  if (!atLeastOneBoxChecked) {
     for (let i = 0; i < form.elements.length; i++) {
       form.elements[i].checked = true;
     }
   }
 }
-
-document.querySelector("[routerlink='/practice']").addEventListener('click', () => setTimeout(initializeCategories, 500));

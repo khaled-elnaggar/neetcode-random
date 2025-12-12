@@ -1,1 +1,3 @@
 *.zip
+/chrome-plugin
+/firefox-plugin

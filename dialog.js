@@ -54,7 +54,7 @@ modal.innerHTML += `
         <a target="_blank" id="url_rnd">leetcode link</a>
         <p id="difficulty_rnd">difficulty</p>
         <p id="solved_rnd">solved</p>
-        <details>
+        <details style="font-size: 12px;">
           <summary id="summary_rnd" style="color: var(--text-color); margin-bottom: 10px"">Category (click to reveal)</summary>
           <p id="category_rnd" style="margin-left: 20px">category</p>
         </details>
@@ -101,7 +101,7 @@ document.body.appendChild(searchIcon);
 
 searchIcon.addEventListener("click", function (e) {
   if (modal.style.display !== "block") {
-    initializeCategories();
+    initializeCategoriesAndProblems();
     modal.style.display = "block";
   }
   else modal.style.display = "none";

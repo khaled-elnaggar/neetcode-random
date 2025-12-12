@@ -1,11 +1,30 @@
 var easy, medium, hard;
+var problemTablesLoaded = false;
 var allProblems = {};
 var allCategories = "All categories";
 let categories = {[allCategories]:null};
 
+// ===== route change watcher (SPA-safe) =====
+
+let lastPath = location.pathname;
+
+setInterval(() => {
+  if (location.pathname !== lastPath) {
+    lastPath = location.pathname;
+
+    if (lastPath === "/practice") {
+      setTimeout(initializeCategoriesAndProblems, 300);
+    }
+  }
+}, 300);
+
+
+function initializeCategoriesAndProblems(){
+  initializeCategories();
+  loadProblemsTables();
+}
 
 function initializeCategories() {
-  console.log("Initializing categories");
   extractCategoryNames();
   fillCategoriesInSelectOptions();
 }
@@ -33,9 +52,32 @@ function fillCategoriesInSelectOptions() {
   })
 }
 
-document.querySelector("[routerlink='/practice']").addEventListener('click', () => setTimeout(initializeCategories, 500));
+function loadProblemsTables(){
+  if (problemTablesLoaded == true) {
+    return;
+  }
+
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+
+  const accordions = Array.from(document.querySelectorAll('button.accordion')).reverse();
+
+  for (const btn of accordions) {
+      btn.click();
+      btn.click();
+  }
+
+  setTimeout(() => {
+    window.scrollTo(scrollLeft, scrollTop);
+  }, 100);
+
+  problemTablesLoaded = true;
+}
 
 function buildInternalTableFromProblemStatus() {
+  if(!problemTablesLoaded) {
+    loadProblemsTables();
+  }
   let htmlQuestionTables = document.getElementsByClassName("table");
   easy = []; medium = []; hard = [];
   allProblems = { easy, medium, hard };

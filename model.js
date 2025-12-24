@@ -32,7 +32,7 @@ function initializeCategories() {
 function extractCategoryNames() {
   document.querySelectorAll("app-pattern-table").forEach(e => {
     let categoryHeader = e.firstChild.firstChild.firstChild;
-    categories[categoryHeader.firstChild.textContent] = categoryHeader;
+    categories[categoryHeader.children[1].textContent] = categoryHeader;
   }
   )
 }
@@ -134,7 +134,7 @@ function getProblemFromRequest(requiredProblem) {
   if (requiredProblem.solved) candidateProblems = candidateProblems.filter(q => q.solved)
 
   if (!requiredProblem["req_category"].includes(allCategories)) {
-    candidateProblems = candidateProblems.filter(problem => requiredProblem["req_category"].includes(problem.category.firstChild.textContent))
+    candidateProblems = candidateProblems.filter(problem => requiredProblem["req_category"].includes(problem.category.children[1].textContent))
   }
 
   return getProblemFromPool(candidateProblems)
